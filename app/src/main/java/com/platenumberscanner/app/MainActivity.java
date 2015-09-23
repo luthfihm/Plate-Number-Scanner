@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,11 +16,16 @@ import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
     private final int SELECT_PHOTO = 1;
     private ImageView imageView;
+    private Image chainCodeGetter;
+    private String chainCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +58,12 @@ public class MainActivity extends Activity {
                         OtsuBinarize otsuBinarize = new OtsuBinarize(selectedImage);
                         Bitmap binarized = otsuBinarize.getBinarize();
                         imageView.setImageBitmap(binarized);
+                        chainCodeGetter = new Image(binarized, true);
+                        chainCode = chainCodeGetter.analyze();
+                        ChainCodeAnalyzer(chainCode);
                     } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -80,5 +91,11 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void ChainCodeAnalyzer(String pattern){
+        List<String> patternList = Arrays.asList(pattern.split("\n"));
+        for(String p : patternList){
+            Log.d("PATTERN",p);
+        }
     }
 }
