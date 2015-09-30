@@ -316,5 +316,34 @@ public class Image {
 		}
 		return a;
 	} 
+	
+	public String convert(String in) {
+		String retval = "";
+		for (char c : in.toCharArray()) {
+			if (c=='0') {
+				retval = retval + "7";
+			} else if (c=='1') {
+				retval = retval + "0";
+			} else if (c=='2') {
+				retval = retval + "1";
+			} else if (c=='3') {
+				retval = retval + "2";
+			} else if (c=='4') {
+				retval = retval + "3";
+			} else if (c=='5') {
+				retval = retval + "4";
+			} else if (c=='6') {
+				retval = retval + "5";
+			} else if (c=='7') {
+				retval = retval + "6";
+			}
+		}
+		int len = retval.length();
+		String retvalR = "";
+		for (int i=len-1; i>=0; i--) {
+			retvalR = retvalR + retval.charAt(i);
+		}
+		return retvalR;
+	}
 
 }
