@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -24,14 +25,23 @@ import java.util.List;
 public class MainActivity extends Activity {
     private final int SELECT_PHOTO = 1;
     private ImageView imageView;
+    private TextView answerText;
     private Image chainCodeGetter;
     private String chainCode;
+    private boolean whiteHot;
+    private String answers;
+    private OwnOCR OCR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imageView = (ImageView)findViewById(R.id.imageView);
+        answerText = (TextView)findViewById(R.id.textView);
+        whiteHot = true;
+        //Create a model
+        OCR = new OwnOCR();
+        OCR.createmodel();
 
         Button pickImage = (Button) findViewById(R.id.btn_pick);
         pickImage.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +68,7 @@ public class MainActivity extends Activity {
                         OtsuBinarize otsuBinarize = new OtsuBinarize(selectedImage);
                         Bitmap binarized = otsuBinarize.getBinarize();
                         imageView.setImageBitmap(binarized);
-                        chainCodeGetter = new Image(binarized, true);
+                        chainCodeGetter = new Image(binarized, whiteHot);
                         chainCode = chainCodeGetter.analyze();
                         ChainCodeAnalyzer(chainCode);
                     } catch (FileNotFoundException e) {
@@ -93,9 +103,14 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
     public void ChainCodeAnalyzer(String pattern){
+        String getChar;
         List<String> patternList = Arrays.asList(pattern.split("\n"));
+        answers = "";
         for(String p : patternList){
-            Log.d("PATTERN",p);
+            getChar = OCR.AnalyzeCode(p);
+            Log.d("PAT",p);
+            answers += getChar;
         }
+        answerText.setText(answers);
     }
 }
